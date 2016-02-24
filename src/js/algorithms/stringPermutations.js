@@ -6,7 +6,7 @@ function printAllStringPerms(str) {
 }
 
 /**
-Obtain all Stirng permutation. Factorial recursive complexity
+Obtain all string permutation. Factorial recursive complexity
 */
 function createPerms(str, prefix) {
   if (str.length < 1) {
