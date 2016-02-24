@@ -8,3 +8,10 @@
 - Rotate a string with substring function
 - Check if a string is a rotated version of another. This algorithm works by
 concating string A twice and checking if string B is a substring of the concatenated string.
+
+## Compress Strings
+- Compress a String by counting how many identical chars are sequential. Returns
+that new compressed string only if the length of that result is shorter than the
+original
+-- aaaabbbc = 4a3b1c
+-- abcd = abcd (not 1a1b1c becasue it is longer)
