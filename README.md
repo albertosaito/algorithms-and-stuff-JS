@@ -1,4 +1,9 @@
 # Algorithms and Stuff in JS!
+## Higher Order functions
+- Using filter-map-reduce with fat arrow notation
+- Using filter-map with function as variables
+- Using filter-forEach with fat arrow notation
+
 ## Shortest Path
 - Shortest Path Algorithm using adjacency matrix and BFS-Dijkstra
 - Prints shortest distance and path

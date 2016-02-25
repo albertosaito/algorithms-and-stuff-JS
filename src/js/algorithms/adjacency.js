@@ -43,7 +43,7 @@ function createMaze (rows, cols) {
   for (var i=0; i<rows; i++) {
     var row = [];
     for (var j=0; j<cols; j++) {
-      row.push(Math.random() > 0.5 ? _ : null);
+      row.push(Math.random() > 0.35 ? _ : null);
     }
     matrix.push(row);
   }
