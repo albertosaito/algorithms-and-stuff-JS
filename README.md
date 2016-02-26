@@ -26,3 +26,9 @@ original
 - Obtain all String permutations. i.e. ABC => ABC, ACB, BAC, BCA, CAB, CBA
 - Recursive
 - Factorial complexity
+
+## One Edit Away
+- Check if a String is just "one edit away" from another String
+  - One REPLACE
+  - One DELETE
+  - One INSERT
