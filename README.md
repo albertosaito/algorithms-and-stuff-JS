@@ -32,3 +32,6 @@ original
   - One REPLACE
   - One DELETE
   - One INSERT
+
+## Generator functions
+- Sample easy use case
