@@ -69,6 +69,64 @@ Note that in order for `jest.advanceTimersByTime()` to work properly, your inter
 use setInterval() instead of setTimeout(). If your function uses `setTimeout()`, you can use
 `jest.advanceTimersToNextTimer()` instead to advance time to the next timer.
 
+## Unit testing JavaScript classes
+To use Jest to unit test constructors and instances in JavaScript, you can create a test file that
+imports the module or class you want to test and then use Jest's assertion functions to test the
+behavior of the constructor and its instances.
+
+Here's an example of how you can test a simple constructor and its instances using Jest:
+
+``` javascript
+// myClass.js
+class MyClass {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayHello() {
+    console.log(`Hello, ${this.name}!`);
+  }
+}
+
+module.exports = MyClass;
+```
+
+``` javascript
+// myClass.test.js
+const MyClass = require('./myClass');
+
+test('MyClass constructor sets name property', () => {
+  const instance = new MyClass('John');
+
+  expect(instance.name).toBe('John');
+});
+
+test('MyClass instance can say hello', () => {
+  const instance = new MyClass('John');
+
+  console.log = jest.fn();
+
+  instance.sayHello();
+
+  expect(console.log).toHaveBeenCalledWith('Hello, John!');
+});
+```
+
+In this example, we're testing a simple class `MyClass` that has a constructor and a method. In the
+first test, we create an instance of `MyClass` and check that the name property is set correctly. In
+the second test, we create an instance of `MyClass`, mock the `console.log()` method using
+`jest.fn()`, and then call the `sayHello()` method to check that it logs the correct message to the
+console.
+
+Note that in order to mock the `console.log()` method, we're assigning it to `jest.fn()` and then
+using that mocked function in the test. This allows us to check that the method was called with the
+correct arguments without actually logging anything to the console.
+
+Additionally, if your class has dependencies, you can use Jest's mocking capabilities to mock those
+dependencies and test the behavior of your class in isolation. You can use the `jest.mock()`
+function to replace the implementation of a dependency with a mock implementation, and then use
+`jest.fn()` to mock methods on the mock implementation.
+
 # Java
 
 # Bash/Shell Script
