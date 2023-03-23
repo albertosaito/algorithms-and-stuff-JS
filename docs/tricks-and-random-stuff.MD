@@ -17,7 +17,7 @@ installed with the correct dependencies and that the resulting packages are cons
 maintainable.They can also use tools such as npm audit to check for security vulnerabilities and
 other issues in their packages and their dependencies.
 
-## Unit testing interval
+## Unit testing intervals
 
 This can be tricky sometimes... To unit test a JavaScript function that runs in an interval, you can
  use Jest's jest.useFakeTimers() function to mock the timer APIs and control the passage of time in
