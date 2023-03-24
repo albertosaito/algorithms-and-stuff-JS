@@ -1,4 +1,7 @@
 # Algorithms and Stuff in JS!
+
+## A lot of nice tips and tricks (misc topics)
+
 ## Higher Order functions
 - Using filter-map-reduce with fat arrow notation
 - Using filter-map with function as variables
