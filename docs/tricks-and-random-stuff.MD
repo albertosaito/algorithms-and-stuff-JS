@@ -127,6 +127,177 @@ dependencies and test the behavior of your class in isolation. You can use the `
 function to replace the implementation of a dependency with a mock implementation, and then use
 `jest.fn()` to mock methods on the mock implementation.
 
+## Unit testing `EventEmitter` logic
+To unit test event emitters using Jest, you can follow these steps:
+
+1. Create a new Jest test file for your event emitter class or module.
+2. Import your event emitter class or module into your Jest test file.
+3. Write a test case that creates an instance of your event emitter class or module.
+4. Use Jest's expect function to assert that the event emitter instance is not null or undefined.
+5. Write additional test cases that simulate events being emitted from the event emitter and use
+Jest's expect function to assert that the events were emitted with the correct data.
+
+Here's an example test file for an event emitter class:
+
+``` javascript
+const { EventEmitter } = require('events');
+
+describe('EventEmitter', () => {
+  test('should create an instance of EventEmitter', () => {
+    const emitter = new EventEmitter();
+    expect(emitter).toBeDefined();
+  });
+
+  test('should emit events with correct data', () => {
+    const emitter = new EventEmitter();
+
+    const onData = jest.fn();
+    const onEnd = jest.fn();
+
+    emitter.on('data', onData);
+    emitter.on('end', onEnd);
+
+    emitter.emit('data', { message: 'hello' });
+    expect(onData).toHaveBeenCalledWith({ message: 'hello' });
+
+    emitter.emit('end');
+    expect(onEnd).toHaveBeenCalled();
+  });
+});
+```
+
+In this example, the first test case creates an instance of the EventEmitter class and asserts that
+it is not null or undefined.
+
+The second test case creates an instance of the EventEmitter class and attaches event listeners for
+the 'data' and 'end' events. Then, it simulates the 'data' and 'end' events being emitted from the
+event emitter and uses Jest's expect function to assert that the events were emitted with the
+correct data.
+
+By testing your event emitter in this way, you can ensure that it is emitting events correctly and
+handling them appropriately.
+
+Here's a more complex example that shows how to test an event emitter that communicates with an
+external service:
+
+``` javascript
+const { EventEmitter } = require('events');
+const { Client } = require('my-service-client');
+
+class MyService extends EventEmitter {
+  constructor(config) {
+    super();
+    this.client = new Client(config);
+  }
+
+  async start() {
+    try {
+      await this.client.connect();
+      this.emit('connected');
+    } catch (err) {
+      this.emit('error', err);
+    }
+  }
+
+  async stop() {
+    try {
+      await this.client.disconnect();
+      this.emit('disconnected');
+    } catch (err) {
+      this.emit('error', err);
+    }
+  }
+}
+
+describe('MyService', () => {
+  let myService;
+  let mockClient;
+
+  beforeEach(() => {
+    mockClient = {
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+    };
+
+    myService = new MyService({
+      client: mockClient,
+    });
+  });
+
+  test('should start and emit connected event', async () => {
+    const onConnected = jest.fn();
+
+    myService.on('connected', onConnected);
+
+    mockClient.connect.mockResolvedValueOnce();
+
+    await myService.start();
+
+    expect(mockClient.connect).toHaveBeenCalledTimes(1);
+    expect(onConnected).toHaveBeenCalledTimes(1);
+  });
+
+  test('should stop and emit disconnected event', async () => {
+    const onDisconnected = jest.fn();
+
+    myService.on('disconnected', onDisconnected);
+
+    mockClient.disconnect.mockResolvedValueOnce();
+
+    await myService.stop();
+
+    expect(mockClient.disconnect).toHaveBeenCalledTimes(1);
+    expect(onDisconnected).toHaveBeenCalledTimes(1);
+  });
+
+  test('should emit error event on start failure', async () => {
+    const onError = jest.fn();
+    const errorMsg = 'Failed to connect to client';
+
+    myService.on('error', onError);
+
+    mockClient.connect.mockRejectedValueOnce(new Error(errorMsg));
+
+    await expect(myService.start()).rejects.toThrowError(errorMsg);
+
+    expect(mockClient.connect).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(new Error(errorMsg));
+  });
+
+  test('should emit error event on stop failure', async () => {
+    const onError = jest.fn();
+    const errorMsg = 'Failed to disconnect from client';
+
+    myService.on('error', onError);
+
+    mockClient.disconnect.mockRejectedValueOnce(new Error(errorMsg));
+
+    await expect(myService.stop()).rejects.toThrowError(errorMsg);
+
+    expect(mockClient.disconnect).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledWith(new Error(errorMsg));
+  });
+});
+```
+
+In this example, we have a MyService class that extends EventEmitter and uses an external service
+client to connect and disconnect from a service.
+
+The MyService class has two methods: start() and stop(), which connect and disconnect from the
+external service respectively. Both methods emit events when they succeed or fail.
+
+In the Jest tests, we create a mock client object and pass it to a new instance of MyService. Then,
+we write four test cases:
+
+- The first test case checks that `start()` connects to the client and emits a 'connected' event.
+- The second test case checks that `stop()` disconnects from the client and emits a 'disconnected'
+event.
+- The third test case checks that `start()` emits an 'error' event if the client fails to connect.
+- The fourth test case checks that `stop()` emits an 'error' event if the client fails to
+disconnect.
+
 # Java
 
 # Bash/Shell Script
