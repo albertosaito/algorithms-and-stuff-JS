@@ -371,6 +371,136 @@ use `expect(state).toBe(1)` to ensure that the state has been changed as expecte
 By testing the delayedAction function in this way, we can ensure that it behaves as expected when
 used in real code.
 
+## Unit testing native streams
+Node.js provides a set of built-in stream modules that can be used to read and write data from
+various sources and destinations. When working with these stream modules, it's important to test
+that they are working correctly and producing the expected output. Here's an example of how to unit
+test native streams in Node.js using Jest:
+
+``` javascript
+const fs = require('fs');
+const { Readable } = require('stream');
+
+function readStream(filePath) {
+  const stream = fs.createReadStream(filePath);
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+    stream.on('end', () => {
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+    stream.on('error', reject);
+  });
+}
+
+describe('readStream', () => {
+  test('reads a file stream and returns the contents', async () => {
+    const content = 'hello, world!';
+    const stream = new Readable({
+      read() {
+        this.push(content);
+        this.push(null);
+      }
+    });
+
+    const filePath = 'test.txt';
+    fs.createWriteStream(filePath).write(content);
+
+    const result = await readStream(filePath);
+    expect(result).toBe(content);
+  });
+});
+```
+
+In this example, we have a `readStream` function that reads the contents of a file and returns them
+as a string. The function uses Node.js' built-in `fs.createReadStream` function to create a stream
+object, and listens for data, end, and error events to handle the data read from the file.
+
+To test this function, we use Jest to create a test suite with a single test case. In the test case,
+we create a `Readable` stream object with a hardcoded string value, and a corresponding file with
+the same content. We then call `readStream` with the file path, and use
+`expect(result).toBe(content)` to verify that the function returns the expected output.
+
+Note that we're not actually using a file stream in our test, but instead simulating a file stream
+with the `Readable` stream object. This allows us to test the `readStream` function without relying
+on an external file, and ensures that our test is deterministic and does not rely on external
+factors.
+
+Here's a more complex example of unit testing native streams in Node.js using Jest. In this example,
+we have a function that reads a CSV file and returns its contents as an array of objects. We'll use
+Jest to test this function and ensure that it correctly parses the CSV data into objects.
+
+``` javascript
+const fs = require('fs');
+const { Transform } = require('stream');
+
+function parseCSV(csvString) {
+  const rows = csvString.trim().split('\n');
+  const headers = rows[0].split(',');
+  const data = rows.slice(1);
+  return data.map((row) => {
+    const values = row.split(',');
+    return headers.reduce((obj, header, index) => {
+      obj[header] = values[index];
+      return obj;
+    }, {});
+  });
+}
+
+function readCSV(filePath) {
+  const stream = fs.createReadStream(filePath);
+  const transform = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, callback) {
+      const csvString = chunk.toString();
+      const data = parseCSV(csvString);
+      data.forEach((obj) => this.push(obj));
+      callback();
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    const rows = [];
+    stream.on('error', reject);
+    transform.on('error', reject);
+    transform.on('data', (row) => rows.push(row));
+    transform.on('end', () => resolve(rows));
+    stream.pipe(transform);
+  });
+}
+
+describe('readCSV', () => {
+  test('reads a CSV file and returns an array of objects', async () => {
+    const content = 'id,name,age\n1,Alice,25\n2,Bob,30\n3,Charlie,35\n';
+    const filePath = 'test.csv';
+    fs.createWriteStream(filePath).write(content);
+
+    const result = await readCSV(filePath);
+    expect(result).toEqual([
+      { id: '1', name: 'Alice', age: '25' },
+      { id: '2', name: 'Bob', age: '30' },
+      { id: '3', name: 'Charlie', age: '35' }
+    ]);
+  });
+});
+```
+
+In this example, we have a `readCSV` function that reads a CSV file and returns its contents as an
+array of objects. The function uses Node.js' built-in `fs.createReadStream` function to create a
+stream object, and pipes the stream through a Transform object that converts the CSV data into
+objects.
+
+To test this function, we create a CSV file with hardcoded content, and call `readCSV` with the file
+path. We then use `expect(result).toEqual(expected)` to verify that the function returns the
+expected output. In this case, we expect the output to be an array of three objects, each with id,
+name, and age properties.
+
+Note that this example also includes error handling for the stream and transform objects, and uses
+Jest's async and await syntax to handle the asynchronous nature of the function.
+
+
 # Java
 
 # Bash/Shell Script
