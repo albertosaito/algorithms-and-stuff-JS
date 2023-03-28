@@ -298,6 +298,79 @@ event.
 - The fourth test case checks that `stop()` emits an 'error' event if the client fails to
 disconnect.
 
+## Unit testing timeouts
+
+When testing `setTimeout` logic, it's important to ensure that the callback function is executed
+after the specified delay, and that any associated state changes occur as expected. Here's an
+example of how to test `setTimeout` logic using Jest:
+
+``` javascript
+function delayedAction(callback, delay) {
+  setTimeout(() => {
+    callback();
+  }, delay);
+}
+
+describe('delayedAction', () => {
+  jest.useFakeTimers();
+
+  test('callback is called after specified delay', () => {
+    const callback = jest.fn();
+    const delay = 1000;
+
+    delayedAction(callback, delay);
+
+    expect(callback).not.toBeCalled();
+
+    jest.advanceTimersByTime(delay);
+
+    expect(callback).toBeCalled();
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  test('callback changes state as expected', () => {
+    let state = 0;
+
+    const callback = () => {
+      state = 1;
+    };
+
+    const delay = 1000;
+
+    delayedAction(callback, delay);
+
+    expect(state).toBe(0);
+
+    jest.advanceTimersByTime(delay);
+
+    expect(state).toBe(1);
+  });
+});
+```
+
+In this example, we have a delayedAction function that takes a callback function and a delay time as
+arguments. The function uses setTimeout to call the callback function after the specified delay.
+
+To test this function, we use Jest's useFakeTimers function to create a fake timer environment.
+Then, we write two test cases:
+
+The first test case checks that the callback function is called after the specified delay. We pass a
+mock callback function that uses `jest.fn()` to count how many times it is called. We then call 
+`delayedAction` with the mock callback and a delay of 1000ms. We use
+`expect(callback).not.toBeCalled()` to ensure that the callback has not yet been called, and then we
+use `jest.advanceTimersByTime(delay)` to advance the fake timer by the specified delay time.
+Finally, we use `expect(callback).toBeCalled()` to ensure that the callback has been called once.
+
+The second test case checks that the callback function changes state as expected. We declare a state
+variable with an initial value of 0. We then pass a mock callback function that sets the state
+variable to 1. We call `delayedAction` with the mock callback and a delay of 1000ms. We use
+`expect(state).toBe(0)` to ensure that the state has not yet changed, and then we use
+`jest.advanceTimersByTime(delay)` to advance the fake timer by the specified delay time. Finally, we
+use `expect(state).toBe(1)` to ensure that the state has been changed as expected.
+
+By testing the delayedAction function in this way, we can ensure that it behaves as expected when
+used in real code.
+
 # Java
 
 # Bash/Shell Script
