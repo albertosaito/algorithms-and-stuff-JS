@@ -1,7 +1,19 @@
 # Jest Unit Testing
 When in doubt, GO [HERE](https://jestjs.io/) AND RTFM! lol jk :p
 
-## Unit testing intervals
+---
+
+## Table of Contents
+- [Testing intervals](#testing-intervals)
+- [Testing JavaScript classes](#testing-javascript-classes)
+- [Testing `EventEmitter` logic](#testing-eventemitter-logic)
+- [Testing timeouts](#testing-timeouts)
+- [Testing native streams](#testing-native-streams)
+- [Testing "builder" pattern modules and classes](#testing-builder-pattern-modules-and-classes)
+
+---
+
+## Testing intervals
 
 This can be tricky sometimes... To unit test a JavaScript function that runs in an interval, you can
  use Jest's jest.useFakeTimers() function to mock the timer APIs and control the passage of time in
@@ -53,7 +65,9 @@ Note that in order for `jest.advanceTimersByTime()` to work properly, your inter
 use setInterval() instead of setTimeout(). If your function uses `setTimeout()`, you can use
 `jest.advanceTimersToNextTimer()` instead to advance time to the next timer.
 
-## Unit testing JavaScript classes
+
+--- 
+## Testing JavaScript classes
 To use Jest to unit test constructors and instances in JavaScript, you can create a test file that
 imports the module or class you want to test and then use Jest's assertion functions to test the
 behavior of the constructor and its instances.
@@ -111,7 +125,8 @@ dependencies and test the behavior of your class in isolation. You can use the `
 function to replace the implementation of a dependency with a mock implementation, and then use
 `jest.fn()` to mock methods on the mock implementation.
 
-## Unit testing `EventEmitter` logic
+---
+## Testing `EventEmitter` logic
 To unit test event emitters using Jest, you can follow these steps:
 
 1. Create a new Jest test file for your event emitter class or module.
@@ -281,8 +296,9 @@ event.
 - The third test case checks that `start()` emits an 'error' event if the client fails to connect.
 - The fourth test case checks that `stop()` emits an 'error' event if the client fails to
 disconnect.
+---
 
-## Unit testing timeouts
+## Testing timeouts
 
 When testing `setTimeout` logic, it's important to ensure that the callback function is executed
 after the specified delay, and that any associated state changes occur as expected. Here's an
@@ -354,8 +370,7 @@ use `expect(state).toBe(1)` to ensure that the state has been changed as expecte
 
 By testing the delayedAction function in this way, we can ensure that it behaves as expected when
 used in real code.
-
-## Unit testing native streams
+## Testing native streams
 Node.js provides a set of built-in stream modules that can be used to read and write data from
 various sources and destinations. When working with these stream modules, it's important to test
 that they are working correctly and producing the expected output. Here's an example of how to unit
@@ -484,6 +499,7 @@ name, and age properties.
 Note that this example also includes error handling for the stream and transform objects, and uses
 Jest's async and await syntax to handle the asynchronous nature of the function.
 
+---
 ## Testing "builder" pattern modules and classes
 Let's start describing the "Builder" pattern:
 The builder pattern is a design pattern that can be used in JavaScript (and in general in any OO
@@ -609,3 +625,5 @@ Also note how we are using `jest.fn().mockReturnThis`. In Jest, `mockReturnThis(
 mock functions that can be used to create a mock function that always returns `this`. In this
 context, the `this` keyword refers to the object that the method is being called on, so in the
 context of a mock function, it refers to the mock object itself.
+
+---
