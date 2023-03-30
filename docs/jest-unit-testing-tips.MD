@@ -483,3 +483,129 @@ name, and age properties.
 
 Note that this example also includes error handling for the stream and transform objects, and uses
 Jest's async and await syntax to handle the asynchronous nature of the function.
+
+## Testing "builder" pattern modules and classes
+Let's start describing the "Builder" pattern:
+The builder pattern is a design pattern that can be used in JavaScript (and in general in any OO
+programming language) to simplify the creation of complex objects. It is a creational pattern, which
+means it provides a way to create objects while hiding the creation logic and complexity from the
+client code.
+
+In the builder pattern, instead of directly creating an object and setting its properties using a
+constructor or setters, you use a builder object to construct the object step by step. The builder
+object exposes methods for setting the properties of the object, and each method returns the builder
+object itself. This allows you to chain the method calls together, creating a fluent interface that
+reads like a sentence.
+
+Once you have set all the properties using the builder object, you call a final `build` method to
+return the fully constructed object. This separation of concerns makes the code more modular, easier
+to read, and easier to maintain.
+
+If you want to mock a module or class instance that uses the "builder" pattern you can do something
+like this: Assuming we have a `CarBuilder` class, in order to test other parts of your code that
+depend on it, you can use Jest's `jest.mock()` function to create a mock implementation of the
+class.
+
+Here's an example of how you can mock the `CarBuilder` class:
+
+``` javascript
+// carBuilder.js
+class CarBuilder {
+  constructor() {
+    this.car = {};
+  }
+
+  setMake(make) {
+    this.car.make = make;
+    return this;
+  }
+
+  setModel(model) {
+    this.car.model = model;
+    return this;
+  }
+
+  setYear(year) {
+    this.car.year = year;
+    return this;
+  }
+
+  setColor(color) {
+    this.car.color = color;
+    return this;
+  }
+
+  build() {
+    return this.car;
+  }
+}
+
+module.exports = CarBuilder;
+```
+
+``` javascript
+// otherModule.js
+const CarBuilder = require('./carBuilder');
+
+function buildCar() {
+  return new CarBuilder()
+    .setMake('Toyota')
+    .setModel('Camry')
+    .setYear(2020)
+    .setColor('blue')
+    .build();
+}
+
+module.exports = { buildCar };
+```
+
+``` javascript
+// otherModule.test.js
+const CarBuilder = require('./carBuilder');
+const otherModule = require('./otherModule');
+
+jest.mock('./carBuilder');
+
+describe('otherModule', () => {
+  test('buildCar calls CarBuilder correctly', () => {
+    CarBuilder.mockImplementation(() => {
+      return {
+        setMake: jest.fn().mockReturnThis(),
+        setModel: jest.fn().mockReturnThis(),
+        setYear: jest.fn().mockReturnThis(),
+        setColor: jest.fn().mockReturnThis(),
+        build: jest.fn().mockReturnValue({ make: 'Toyota', model: 'Camry', year: 2020, color: 'blue' })
+      };
+    });
+
+    const car = otherModule.buildCar();
+
+    expect(CarBuilder).toHaveBeenCalled();
+    expect(car).toEqual({ make: 'Toyota', model: 'Camry', year: 2020, color: 'blue' });
+  });
+});
+```
+
+In this example, we have two modules: `carBuilder.js` and `otherModule.js`. The `otherModule.js`
+file depends on the CarBuilder class from the `carBuilder.js` file. We want to test the
+`otherModule.js` file, but we need to mock the `CarBuilder` class to isolate the code being tested.
+
+In the test file `otherModule.test.js`, we use `jest.mock()` to mock the `CarBuilder class`. We then
+define a single unit test that sets up a mock implementation of the `CarBuilder` class using
+`jest.fn()` to create mock functions for each method. The `build()` method is then mocked to return
+a test object.
+
+We then call the `buildCar()` function from the `otherModule.js` file, and use the `expect()`
+function to check that the `CarBuilder` class was called and that the resulting car object has the
+correct properties.
+
+Note that by default, Jest's mock implementation of a class will return another mock implementation,
+which can be chained to create complex mock objects. You can customize the behavior of the mock
+implementation by providing your own implementation code using `mockImplementation()`. In this
+example, we used `mockImplementation()` to create a mock implementation that returns a mock object
+with the expected properties.
+
+Also note how we are using `jest.fn().mockReturnThis`. In Jest, `mockReturnThis()` is a method on
+mock functions that can be used to create a mock function that always returns `this`. In this
+context, the `this` keyword refers to the object that the method is being called on, so in the
+context of a mock function, it refers to the mock object itself.
