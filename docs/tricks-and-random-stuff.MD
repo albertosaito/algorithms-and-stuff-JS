@@ -20,6 +20,10 @@ other issues in their packages and their dependencies.
 # Java
 
 # Bash/Shell Script
+## How to use `xargs`
+`xargs` is so cool to use within your `bash` scripts, when piping/composing commands and one of them does not play nice with this model.
+### TODO ###
+
 
 # Elixir
 
