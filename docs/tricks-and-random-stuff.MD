@@ -71,6 +71,125 @@ This command will create a README.txt file in each directory in the current dire
 
 There's a lot of ways to use and abuse this tool!
 
+## How to use `sed`
+`sed` is a powerful command line utility that is used for text processing and editing. It stands for
+"stream editor", which means that it reads a text stream from standard input (or a file) and
+performs editing operations on it. Here's a brief tutorial on how to use sed:
+
+The basic syntax of sed is:
+
+``` bash
+sed [options] 'command' file(s)
+```
+Here, `options` are optional command line options that modify the behavior of sed, `command` is the
+editing command that you want to perform on the input text, and `file`(s) are the input file(s) that
+you want to process.
+
+Here are some common sed commands:
+
+### substitute (s): Replace a string in the input text with another string.
+
+``` bash
+sed 's/old/new/' input.txt
+```
+This command replaces the first occurrence of "old" in each line of `input.txt` with "new".
+
+You can use different delimiters to separate the fields in the s command. For example, you can use a
+colon as the delimiter instead of a slash:
+
+``` bash
+sed 's:old:new:' input.txt
+```
+You can also use the `g` option to replace all occurrences of the string in each line:
+
+``` bash
+sed 's/old/new/g' input.txt
+```
+
+### delete (d): Delete a line or a range of lines from the input text.
+
+``` bashCopy code
+sed '3d' input.txt
+```
+This command deletes the third line from input.txt.
+
+You can also delete a range of lines by specifying a start and end line number:
+
+``` bash
+sed '2,5d' input.txt
+```
+This command deletes lines 2 to 5 from input.txt.
+
+### print (p): Print lines that match a pattern.
+
+``` bash
+sed -n '/pattern/p' input.txt
+```
+This command prints all lines that contain the string "pattern" in input.txt.
+
+The `-n` option tells sed to suppress the default output, and the p command tells it to print only
+the lines that match the pattern.
+
+### append (a): Append text after a line.
+
+``` bash
+sed '/pattern/a text to append' input.txt
+```
+This command finds the first line that contains "pattern" in `input.txt`, and appends "text to
+append after it.
+
+You can use the `i` command to insert text before a line, and the `c` command to replace a line with
+text.
+
+### read (r): Read a file and append its contents after a line.
+
+``` bash
+sed '/pattern/r file.txt' input.txt
+```
+This command finds the first line that contains "pattern" in `input.txt`, and appends the contents
+of `file.txt` after it.
+
+Note that the `r` command reads the contents of the file at the time of execution, so changes made
+to `file.txt` after the sed command is executed will not be reflected in the output.
+
+These are just a few examples of the many sed commands available. sed also supports regular
+expressions, backreferences, and other advanced features for more complex text processing tasks.
+
+On the same subject, **backreferences** are a powerful feature of `sed` that allow you to match and
+replace patterns using the text captured by regular expressions. Here's an example of how to use
+backreferences:
+
+Let's say you have a file called `input.txt` with lines of text in the following format:
+
+```
+Firstname Lastname
+```
+And you want to swap the first and last names to get lines in the following format:
+
+```
+Lastname, Firstname
+```
+You can use `sed` with backreferences to achieve this. Here's the command:
+
+``` bash
+sed 's/\(.*\) \(.*\)/\2, \1/' input.txt
+```
+Let's break down the previous funky command:
+
+- `s:` This specifies that we want to perform a substitution.
+- `\(.*\):` This is a regular expression that matches any number of characters and captures it as a
+group (denoted by the parentheses).
+- `\(.*\):` This is another regular expression that matches any number of characters and captures it
+as a group.
+- `/\2, \1/:` This is the replacement string, which uses backreferences to swap the captured groups
+and add a comma and space between them.
+So, when sed encounters a line like `Firstname Lastname`, it captures "Firstname" and "Lastname" as
+groups, and then replaces the line with "Lastname, Firstname".
+
+Note that we use `\1` and `\2` to refer to the captured groups in the replacement string. `\1`
+refers to the first captured group (i.e., the first name), and \2 refers to the second captured
+group (i.e., the last name).
+
 # Elixir
 
 
