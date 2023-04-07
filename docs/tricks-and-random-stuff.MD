@@ -190,6 +190,77 @@ Note that we use `\1` and `\2` to refer to the captured groups in the replacemen
 refers to the first captured group (i.e., the first name), and \2 refers to the second captured
 group (i.e., the last name).
 
-# Elixir
+## How to use `awk`
+`awk` is a powerful command-line utility for text processing and manipulation. It is particularly
+useful for working with structured data such as tabular data. Here's a brief tutorial on how to use
+awk:
+
+The basic syntax of awk is:
+
+``` bash
+awk '{ action }' file
+```
+Here, action is a set of commands or actions that you want to perform on each line of the input
+file. The commands are enclosed in single quotes, and they are separated by semicolons if there is
+more than one command.
+
+For example, let's say you have a file called data.csv with the following contents:
+
+``` bash
+Alice,25,Female
+Bob,35,Male
+Charlie,40,Male
+```
+You can use awk to perform various operations on this data. Here are some common awk commands:
+
+### Print (p): Print specific fields or the entire line.
+
+```
+awk '{ print $1 }' data.csv
+```
+This command prints the first field (i.e., the name) from each line of data.csv.
+
+You can also print the entire line by omitting the field specifier:
+
+```
+awk '{ print }' data.csv
+```
+This command prints each line of data.csv.
+
+### Sum (s): Calculate the sum of a column of numbers.
+
+```
+awk '{ sum += $2 } END { print sum }' data.csv
+```
+This command calculates the sum of the second field (i.e., the age) from each line of data.csv,
+and prints the total at the end.
+
+### Conditional (c): Select lines that match a condition.
+
+```
+awk '$3 == "Male" { print }' data.csv
+```
+This command selects only the lines of data.csv where the third field (i.e., the gender) is "Male",
+and prints them.
+
+### Pattern Matching (pm): Select lines that match a pattern.
+
+```
+awk '/Char/ { print }' data.csv
+```
+This command selects only the lines of data.csv that contain the string "Char" (i.e., the name
+"Charlie"), and prints them.
+
+### Delimiter (d): Specify the field delimiter.
+
+```
+awk -F ',' '{ print $3 }' data.csv
+```
+This command specifies that the field delimiter in data.csv is a comma, and prints the third field
+(i.e., the gender) from each line.
+
+These are just a few examples of the many awk commands available. awk also supports regular
+expressions, user-defined functions, and other advanced features for more complex data processing
+tasks. 
 
 
