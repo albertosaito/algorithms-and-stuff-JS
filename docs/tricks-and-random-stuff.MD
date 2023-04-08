@@ -263,4 +263,16 @@ These are just a few examples of the many awk commands available. awk also suppo
 expressions, user-defined functions, and other advanced features for more complex data processing
 tasks. 
 
+## Replace `foo` with `bar` in last command”
+
+```
+^foo^bar
+```
+If you did run a long command and you noticed that you made a mistake, to correct the command you can replace only the mistake by the correct word without the need to run the whole command again.
+
+Another alternative to the above command is:
+
+!!:gs/foo/bar
+As opposed to ^foo^bar, which only replaces the first occurrence of foo, this one changes every occurrence
+From: https://www.unixmen.com/10-great-and-powerful-linux-commands-you-may-need-to-know/
 
