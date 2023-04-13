@@ -190,6 +190,40 @@ Note that we use `\1` and `\2` to refer to the captured groups in the replacemen
 refers to the first captured group (i.e., the first name), and \2 refers to the second captured
 group (i.e., the last name).
 
+### Find and replace in all files
+
+``` bash
+#!/bin/bash
+
+# Set the search string and replacement string
+search="old_text"
+replace="new_text"
+
+# Find all files that contain the search string
+files=$(grep -rl "$search" /path/to/search)
+
+# Loop through the files and perform the replace operation
+for file in $files; do
+    sed -i "s/$search/$replace/g" "$file"
+done
+```
+
+Here's how the script works:
+
+The script sets the search and replace variables to the text to search for and replace with.
+
+The `grep` command is used to find all files in the `/path/to/search directory` (and its 
+subdirectories) that contain the search string. The `-r` option tells grep to search recursively,
+and the `-l` option tells it to output only the names of the matching files.
+
+The script loops through the files found by grep and uses the `sed` command to perform the find and
+replace operation. The `-i` option tells sed to edit the file in place, and the `g` modifier at the
+end of the `s` command tells it to replace all occurrences of the search string in each line.
+
+Note that this script will replace all occurrences of the search string in all files that contain
+it. If you want to limit the search to certain file types or directories, you can modify the grep
+command accordingly.
+
 ## How to use `awk`
 `awk` is a powerful command-line utility for text processing and manipulation. It is particularly
 useful for working with structured data such as tabular data. Here's a brief tutorial on how to use
