@@ -10,6 +10,7 @@ When in doubt, GO [HERE](https://jestjs.io/) AND RTFM! lol jk :p
 - [Testing timeouts](#testing-timeouts)
 - [Testing native streams](#testing-native-streams)
 - [Testing "builder" pattern modules and classes](#testing-builder-pattern-modules-and-classes)
+- [Spies in Jest](#spies-in-jest)
 
 ---
 
@@ -627,3 +628,51 @@ context, the `this` keyword refers to the object that the method is being called
 context of a mock function, it refers to the mock object itself.
 
 ---
+## Spies in Jest
+A spy in Jest is a test double that allows you to track and verify function calls during your tests.
+You can create a spy using the `jest.spyOn` function, which takes an object and the name of the
+method you want to spy on as arguments.
+
+Here's an example of how to create a spy on an object's method:
+
+``` javascript
+const myObject = {
+  myMethod() {
+    // some code here
+  }
+};
+
+test('myMethod should be called', () => {
+  const spy = jest.spyOn(myObject, 'myMethod');
+  myObject.myMethod();
+  expect(spy).toHaveBeenCalled();
+});
+```
+
+In this example, we're creating a spy on `myObject.myMethod` using `jest.spyOn`. Then we're calling
+`myObject.myMethod`, which should trigger the spy. Finally, we're using Jest's expect function to
+assert that the spy was called.
+
+You can also use spies to mock the implementation of a function. Here's an example of how to do
+that:
+
+``` javascript
+const myObject = {
+  myMethod() {
+    return 'original implementation';
+  }
+};
+
+test('myMethod should be called with the correct argument', () => {
+  const spy = jest.spyOn(myObject, 'myMethod').mockImplementation(() => 'mock implementation');
+  const result = myObject.myMethod();
+  expect(spy).toHaveBeenCalled();
+  expect(result).toEqual('mock implementation');
+});
+```
+
+In this example, we're creating a spy on `myObject.myMethod` using `jest.spyOn` and providing a mock
+implementation using `mockImplementation`. Then we're calling `myObject.myMethod`, which should
+trigger the spy and return the mock implementation instead of the original implementation. Finally,
+we're using Jest's expect function to assert that the spy was called and that the result is the mock
+implementation.
