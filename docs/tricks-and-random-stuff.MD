@@ -310,3 +310,15 @@ Another alternative to the above command is:
 As opposed to ^foo^bar, which only replaces the first occurrence of foo, this one changes every occurrence
 From: https://www.unixmen.com/10-great-and-powerful-linux-commands-you-may-need-to-know/
 
+## Reuse the last item from the previous command with !$ 
+
+Using the argument of the previous command comes in handy in many situations.
+Say you have to create a directory and then go into the newly created directory. There you can use
+the `!$` options. Recently I've been doing this a lot :p
+
+## Empty a file without deleting it
+Just do:
+
+```
+> filename
+```
