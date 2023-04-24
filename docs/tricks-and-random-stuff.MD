@@ -322,3 +322,27 @@ Just do:
 ```
 > filename
 ```
+
+## Delete old/unused docker images (very destructive!!!)
+``` bash
+#!/bin/bash
+
+# Set variables
+IMAGES_TO_KEEP=10
+DOCKER_IMAGE_IDS=$(docker images -q)
+DOCKER_CONTAINER_IDS=$(docker ps -a -q)
+
+# Delete unused containers
+if [ ! -z "$DOCKER_CONTAINER_IDS" ]; then
+    docker rm $DOCKER_CONTAINER_IDS
+fi
+
+# Delete old images
+if [ ! -z "$DOCKER_IMAGE_IDS" ]; then
+    IMAGE_COUNT=$(echo "$DOCKER_IMAGE_IDS" | wc -w)
+    if (( $IMAGE_COUNT > $IMAGES_TO_KEEP )); then
+        OLD_IMAGES=$(echo "$DOCKER_IMAGE_IDS" | tail -n +$(expr $IMAGES_TO_KEEP + 1))
+        docker rmi $OLD_IMAGES
+    fi
+fi
+```
