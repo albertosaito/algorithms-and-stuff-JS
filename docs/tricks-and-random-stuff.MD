@@ -346,3 +346,25 @@ if [ ! -z "$DOCKER_IMAGE_IDS" ]; then
     fi
 fi
 ```
+
+## Rewriting Git History
+Rewriting git history can be a powerful tool, but it should be used with caution as it can have significant consequences on the codebase and collaboration with other team members. Here are the general steps to rewrite git history:
+
+Identify the commit(s) that you want to change or remove. You can use the git log command to view the commit history and identify the commit hash(es) that you want to modify.
+
+Use the git rebase command with the -i option to start an interactive rebase session. This will allow you to modify the commit history.
+
+``` bash
+git rebase -i HEAD~N
+```
+In the above command, replace N with the number of commits you want to rewrite, starting from the current commit.
+
+In the interactive rebase session, you can pick, edit, squash, or drop commits as needed. To modify a commit, change the command from "pick" to "edit" and save the file.
+
+Use the `git commit --amend` command to make changes to the commit. Once you have made your changes, use the git rebase --continue command to proceed with the rebase.
+
+Repeat steps 3 and 4 as needed until you have modified all the commits you want to change.
+
+Finally, use the `git push --force` command to push the rewritten history to the remote repository. This will overwrite the existing history, so make sure you have communicated with your team members about the changes you have made.
+
+It is important to note that rewriting git history can cause problems if others have already based their work on the original commits. Therefore, it is important to communicate with your team members before making any changes and consider whether the benefits of the rewrite outweigh the potential drawbacks.
