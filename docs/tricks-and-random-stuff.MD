@@ -368,3 +368,42 @@ Repeat steps 3 and 4 as needed until you have modified all the commits you want 
 Finally, use the `git push --force` command to push the rewritten history to the remote repository. This will overwrite the existing history, so make sure you have communicated with your team members about the changes you have made.
 
 It is important to note that rewriting git history can cause problems if others have already based their work on the original commits. Therefore, it is important to communicate with your team members before making any changes and consider whether the benefits of the rewrite outweigh the potential drawbacks.
+
+## Git cherry-picking
+ 
+In Git, cherry-picking is the act of applying a specific commit from one branch to another. Here are
+the steps to cherry-pick a commit:
+
+Identify the commit you want to cherry-pick. You can find the commit hash by running `git log`
+
+Switch to the branch where you want to apply the commit. This can be the same branch as the one
+where the commit was made or a different branch.
+
+```
+git checkout <target-branch>
+```
+Cherry-pick the commit using the git cherry-pick command followed by the commit hash:
+
+```
+git cherry-pick <commit-hash>
+```
+Resolve any conflicts that arise during the cherry-pick process. Git may not be able to
+automatically merge the changes from the cherry-picked commit with the target branch, so you may
+need to manually resolve any conflicts.
+
+```
+git add <file1> <file2> ...
+git cherry-pick --continue
+```
+After resolving any conflicts, commit the changes with a message indicating that you cherry-picked
+the commit:
+
+```
+git commit -m "Cherry-pick <commit-hash>"
+```
+Push the changes to the remote branch:
+
+```
+git push origin <target-branch>
+```
+That's it! The commit should now be applied to the target branch.
